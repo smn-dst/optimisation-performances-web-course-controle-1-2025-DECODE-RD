@@ -1,34 +1,81 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CarouselController!{% endblock %}
+{% block title %}Galaxie Boissières — Guitares custom d'occasion{% endblock %}
+
+{% block meta_description %}Parcourez la Galaxie Boissières : guitares custom d'occasion, modèles Saturne Hyperion et plus. Photos et descriptions détaillées.{% endblock %}
+
+{% block javascripts %}
+<script type="application/ld+json">
+{
+	"@context": "https://schema.org",
+	"@type": "ItemList",
+	"name": "Galaxie Boissières — Guitares custom d'occasion",
+	"description": "Collection de guitares custom Boissières disponibles d'occasion.",
+	"itemListElement": [
+		{% for item in carousel %}
+		{
+			"@type": "ListItem",
+			"position": {{ loop.index }},
+			"item": {
+				"@type": "Product",
+				"name": "{{ item.title | escape('js') }}",
+				"description": "{{ item.description | striptags | escape('js') }}",
+				"image": "{{ asset('img/' ~ item.files[0].filename_disk | replace({'.JPG': '.webp', '.jpg': '.webp', '.jpeg': '.webp'})) }}"
+			}
+		}{% if not loop.last %},{% endif %}
+		{% endfor %}
+	]
+}
+</script>
+{% endblock %}
 
 {% block body %}
 
 <div class="flex flex-col items-center space-y-12 w-11/12">
 	<section class="flex flex-col items-center justify-center w-11/12 space-y-6">
 		<h1 class="text-5xl text-center">Bienvenue dans la Galaxie Boissières</h1>
-		<h2 class="text-xl text-center">Ici gravitent les guitares Boissières qui ont changé d'orbite</h2>
+		<p class="text-xl text-center">Ici gravitent les guitares Boissières qui ont changé d'orbite</p>
 	</section>
 	{% for item in carousel %}
-	<section class="flex flex-row items-center justify-between w-full">
+	<article class="flex flex-row items-center justify-between w-full">
 		<div class="flex flex-col items-center justify-center space-y-6 w-5/12">
 			<h2 class="text-4xl uppercase">{{item.title | raw}}</h2>
 			{{item.description | raw}}
 		</div>
 		<div class="flex flex-col items-center justify-center w-5/12 space-y-6">
-			
-			<img src="{{asset('img/' ~ item.files[0].filename_disk)}}" class="w-full h-[640px] object-cover">
+
+			<img src="{{asset('img/' ~ item.files[0].filename_disk | replace({'.JPG': '.webp', '.jpg': '.webp', '.jpeg': '.webp'}))}}" alt="{{item.title}} — photo principale" width="{{item.files[0].width}}" height="{{item.files[0].height}}" class="w-full h-[640px] object-cover" {% if loop.first and currentPage == 1 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
 
 			<div class="flex flex-row items-center justify-center space-x-6">
 				{% for file in item.files %}
 					{% if loop.index0 != 0 %}
-						<img src="{{asset('img/' ~ file.filename_disk)}}" class="w-full max-h-14 object-cover">
+						<img src="{{asset('img/' ~ file.filename_disk | replace({'.JPG': '.webp', '.jpg': '.webp', '.jpeg': '.webp'}))}}" alt="{{item.title}} — photo {{ loop.index }}" width="{{file.width}}" height="{{file.height}}" class="w-full max-h-14 object-cover" loading="lazy">
 					{% endif%}
 				{% endfor%}
 			</div>
 		</div>
-	</section>
+	</article>
 	{% endfor %}
+
+	{% if totalPages > 1 %}
+	<nav class="flex flex-row items-center justify-center space-x-4">
+		{% if currentPage > 1 %}
+			<a href="{{ path('app_carousel', {page: currentPage - 1}) }}" class="px-4 py-2 border">Précédent</a>
+		{% endif %}
+
+		{% for i in 1..totalPages %}
+			{% if i == currentPage %}
+				<span class="px-4 py-2 border font-bold">{{ i }}</span>
+			{% else %}
+				<a href="{{ path('app_carousel', {page: i}) }}" class="px-4 py-2 border">{{ i }}</a>
+			{% endif %}
+		{% endfor %}
+
+		{% if currentPage < totalPages %}
+			<a href="{{ path('app_carousel', {page: currentPage + 1}) }}" class="px-4 py-2 border">Suivant</a>
+		{% endif %}
+	</nav>
+	{% endif %}
 </div>
 
 {% endblock %}

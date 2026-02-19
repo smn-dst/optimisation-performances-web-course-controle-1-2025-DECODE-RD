@@ -1,19 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{% block meta_description %}Découvrez la collection de guitares Boissières — modèles custom, variations et galerie photo.{% endblock %}">
+        <title>{% block title %}Guitares Boissières{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            <link rel="preload" href="{{ asset('styles/app.css') }}" as="style">
             <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
         {% endblock %}
 
-        {% block javascripts %}
-        {% endblock %}
     </head>
     <body>
+        <header>
+            <nav>
+                {% block nav %}{% endblock %}
+            </nav>
+        </header>
         <main class="flex flex-row items-center justify-center w-full">
             {% block body %}{% endblock %}
         </main>
+        <footer>
+            {% block footer %}{% endblock %}
+        </footer>
+
+        {% block javascripts %}
+        {% endblock %}
     </body>
 </html>

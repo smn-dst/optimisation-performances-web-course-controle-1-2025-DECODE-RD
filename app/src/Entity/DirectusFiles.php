@@ -108,4 +108,14 @@ class DirectusFiles
     {
         return $this->filename_disk;
     }
+
+    public function getWidth(): ?string
+    {
+        return $this->width;
+    }
+
+    public function getHeight(): ?string
+    {
+        return $this->height;
+    }
 }
